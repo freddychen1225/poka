@@ -18,14 +18,27 @@
 <body>
   
   <main id="app-container">
-    <h1>Poka</h1>
-    <p>正在載入中...</p>
-    <!-- 之後這裡會換成 5 個大色塊按鈕 -->
+    <div class="header">
+      <h1>Poka</h1>
+      <p id="system-msg">請點擊下方狀態回報</p>
+    </div>
+    
+    <!-- 5個大方塊按鈕 -->
+    <div class="button-grid">
+      <button class="btn btn-green" onclick="reportStatus('arrived')">我到了</button>
+      <button class="btn btn-blue" onclick="reportStatus('delayed')">我晚一點</button>
+      <button class="btn btn-yellow" onclick="reportStatus('with_friend')">跟同學在一起</button>
+      <button class="btn btn-orange" onclick="reportStatus('busy')">暫時不方便接</button>
+      <button class="btn btn-red" onclick="reportStatus('sos')">SOS 緊急求助</button>
+    </div>
   </main>
 
+  <!-- 載入 Supabase 套件與主程式 -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="app.js"></script>
+
+  <!-- 註冊 Service Worker 讓 PWA 生效 -->
   <script>
-    // 註冊 Service Worker 讓 PWA 生效
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('./sw.js')

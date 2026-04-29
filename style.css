@@ -1,0 +1,32 @@
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
+body { background-color: #f7f6f2; color: #333; }
+
+.header { text-align: center; padding: 20px 10px; }
+#system-msg { font-size: 14px; color: #666; margin-top: 5px; }
+
+.button-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 0 16px 20px;
+  height: calc(100vh - 80px); /* 扣掉 header 高度 */
+}
+
+.btn {
+  flex: 1; /* 讓按鈕平均分配剩餘高度 */
+  border: none;
+  border-radius: 12px;
+  font-size: 24px;
+  font-weight: bold;
+  color: white;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  transition: transform 0.1s;
+}
+.btn:active { transform: scale(0.96); } /* 按下時縮小的回饋感 */
+
+/* 定義顏色 */
+.btn-green { background-color: #437a22; }
+.btn-blue { background-color: #006494; }
+.btn-yellow { background-color: #d19900; color: #28251d; }
+.btn-orange { background-color: #da7101; }
+.btn-red { background-color: #a13544; }

@@ -4,29 +4,42 @@ body { background-color: #f7f6f2; color: #333; }
 .header { text-align: center; padding: 20px 10px; }
 #system-msg { font-size: 14px; color: #666; margin-top: 5px; }
 
+/* 使用 Grid 排列 2x2 + 底部 1 個大方塊 */
 .button-grid {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* 左右各佔一半 */
+  grid-template-rows: 1fr 1fr 1.2fr; /* 三排高度：上中一樣高，最下(SOS)稍微高一點 */
   gap: 12px;
   padding: 0 16px 20px;
   height: calc(100vh - 80px); /* 扣掉 header 高度 */
 }
 
 .btn {
-  flex: 1; /* 讓按鈕平均分配剩餘高度 */
   border: none;
   border-radius: 12px;
-  font-size: 24px;
+  font-size: 20px; /* 文字稍微縮小以適應方塊 */
   font-weight: bold;
   color: white;
   box-shadow: 0 4px 6px rgba(0,0,0,0.1);
   transition: transform 0.1s;
+  /* 讓文字在方塊中置中 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 10px;
 }
+
 .btn:active { transform: scale(0.96); } /* 按下時縮小的回饋感 */
 
-/* 定義顏色 */
+/* 定義各按鈕顏色與 SOS 的跨欄設定 */
 .btn-green { background-color: #437a22; }
 .btn-blue { background-color: #006494; }
 .btn-yellow { background-color: #d19900; color: #28251d; }
 .btn-orange { background-color: #da7101; }
-.btn-red { background-color: #a13544; }
+
+.btn-red { 
+  background-color: #a13544; 
+  grid-column: 1 / -1; /* 讓 SOS 橫跨兩欄（從第一條格線到最後一條） */
+  font-size: 24px; /* SOS 維持大字體 */
+}

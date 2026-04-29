@@ -1,7 +1,8 @@
 // 初始化 Supabase
+// 請把下面的單引號內容換成你的，而且必須在同一行結束！
 const SUPABASE_URL = 'https://kjpxpqxbtslvvmeruofo.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtqcHhwcXhidHNsdnZtZXJ1b2ZvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc0NDAxNjgsImV4cCI6MjA5MzAxNjE2OH0.JAGs-ziFbUsNwXxMkJiKwkiN9O4FVWdDDv5uNfhcPdI';
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 const msgEl = document.getElementById('system-msg');
 
@@ -11,7 +12,7 @@ async function reportStatus(statusCode) {
   
   // 檢查瀏覽器是否支援定位
   if (!navigator.geolocation) {
-    msgEl.innerText = "❌ 你的手機不支援定位功能";
+    msgEl.innerText = "❌ 你的手機或瀏覽器不支援定位功能";
     return;
   }
 
@@ -25,11 +26,11 @@ async function reportStatus(statusCode) {
       msgEl.innerText = "☁️ 定位成功，正在傳送給爸媽...";
 
       // 將資料寫入 Supabase
-      const { data, error } = await supabase
+      const { data, error } = await supabaseClient
         .from('status_logs')
         .insert([
           { 
-            child_name: '兒子', // MVP 寫死，之後可做登入機制
+            child_name: '兒子', // MVP 先寫死
             status_code: statusCode, 
             lat: lat, 
             lng: lng, 
@@ -38,8 +39,8 @@ async function reportStatus(statusCode) {
         ]);
 
       if (error) {
-        console.error(error);
-        msgEl.innerText = "❌ 傳送失敗，請檢查網路";
+        console.error("Supabase 寫入錯誤:", error);
+        msgEl.innerText = "❌ 傳送失敗，請檢查網路或資料庫設定";
       } else {
         msgEl.innerText = "✅ 狀態已成功送出！";
         // 3秒後恢復原狀
@@ -47,9 +48,9 @@ async function reportStatus(statusCode) {
       }
     },
     (error) => {
-      console.error(error);
+      console.error("定位錯誤:", error);
       msgEl.innerText = "❌ 無法取得定位，請確認是否開啟 GPS 權限";
     },
-    { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 } // 強制抓取最新高精度定位
+    { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
   );
 }

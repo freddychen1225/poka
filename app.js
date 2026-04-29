@@ -7,7 +7,7 @@ const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 // Telegram Bot 設定
 const TG_BOT_TOKEN = '8619455506:AAEDQD8rNc62JmfC_y-9r1lcSU1n4dNJThM';
-const TG_CHAT_ID = '-5247063438';
+const TG_CHAT_ID = '1126320871';
 
 // ==========================================
 // 狀態對應與 DOM 元素

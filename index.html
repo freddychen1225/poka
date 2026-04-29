@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <!-- 禁止使用者縮放，讓它更像原生 App -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Poka 波卡回報</title>
+  
+  <!-- PWA Manifest 與 iOS 支援 -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Poka">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  
+  <main id="app-container">
+    <h1>Poka</h1>
+    <p>正在載入中...</p>
+    <!-- 之後這裡會換成 5 個大色塊按鈕 -->
+  </main>
+
+  <script src="app.js"></script>
+  <script>
+    // 註冊 Service Worker 讓 PWA 生效
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js')
+          .then(reg => console.log('Service Worker 註冊成功!', reg))
+          .catch(err => console.log('Service Worker 註冊失敗!', err));
+      });
+    }
+  </script>
+</body>
+</html>

@@ -1,5 +1,20 @@
-* { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
-body { background-color: #f7f6f2; color: #333; }
+*, html, body { 
+  box-sizing: border-box; 
+  margin: 0; 
+  padding: 0; 
+  font-family: sans-serif; 
+  /* 徹底禁止 PWA 上下滑動與放大縮小 */
+  overflow: hidden;
+  touch-action: none; 
+  overscroll-behavior: none;
+}
+
+body { 
+  background-color: #f7f6f2; 
+  color: #333; 
+  height: 100vh; 
+  width: 100vw; 
+}
 
 .header { text-align: center; padding: 20px 10px; }
 #system-msg { font-size: 14px; color: #666; margin-top: 5px; }
@@ -7,8 +22,8 @@ body { background-color: #f7f6f2; color: #333; }
 /* 使用 Grid 排列 2x2 + 底部 1 個大方塊 */
 .button-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr; /* 左右各佔一半 */
-  grid-template-rows: 1fr 1fr 1.2fr; /* 三排高度：上中一樣高，最下(SOS)稍微高一點 */
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr 1.2fr; /* SOS 按鈕稍微高一點 */
   gap: 12px;
   padding: 0 16px 20px;
   height: calc(100vh - 80px); /* 扣掉 header 高度 */
@@ -17,22 +32,21 @@ body { background-color: #f7f6f2; color: #333; }
 .btn {
   border: none;
   border-radius: 12px;
-  font-size: 20px; /* 文字稍微縮小以適應方塊 */
+  font-size: 20px;
   font-weight: bold;
   color: white;
   box-shadow: 0 4px 6px rgba(0,0,0,0.1);
   transition: transform 0.1s;
-  /* 讓文字在方塊中置中 */
+  /* 讓文字置中 */
   display: flex;
   align-items: center;
   justify-content: center;
   text-align: center;
   padding: 10px;
 }
+.btn:active { transform: scale(0.96); }
 
-.btn:active { transform: scale(0.96); } /* 按下時縮小的回饋感 */
-
-/* 定義各按鈕顏色與 SOS 的跨欄設定 */
+/* 定義顏色 */
 .btn-green { background-color: #437a22; }
 .btn-blue { background-color: #006494; }
 .btn-yellow { background-color: #d19900; color: #28251d; }
@@ -40,6 +54,32 @@ body { background-color: #f7f6f2; color: #333; }
 
 .btn-red { 
   background-color: #a13544; 
-  grid-column: 1 / -1; /* 讓 SOS 橫跨兩欄（從第一條格線到最後一條） */
-  font-size: 24px; /* SOS 維持大字體 */
+  grid-column: 1 / -1; /* 讓 SOS 橫跨兩欄 */
+  font-size: 24px; 
 }
+
+/* 彈出視窗樣式 */
+.modal-overlay {
+  position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+  background: rgba(0,0,0,0.6);
+  display: none; /* 預設隱藏，由 JS 控制顯示 */
+  align-items: center; justify-content: center;
+  z-index: 1000;
+}
+
+.modal-box {
+  background: white; padding: 24px; border-radius: 16px;
+  width: 80%; max-width: 320px; text-align: center;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+}
+
+.modal-box h2 { margin-bottom: 8px; color: #28251d; }
+.modal-box p { margin-bottom: 24px; color: #666; font-size: 14px; }
+.modal-buttons { display: flex; gap: 12px; }
+
+.btn-modal {
+  flex: 1; padding: 12px; border: none; border-radius: 8px;
+  font-size: 16px; font-weight: bold;
+}
+.btn-modal.cancel { background: #e6e4df; color: #333; }
+.btn-modal.confirm { background: #01696f; color: white; }

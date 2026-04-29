@@ -2,11 +2,9 @@
 <html lang="zh-TW">
 <head>
   <meta charset="UTF-8">
-  <!-- 禁止使用者縮放，讓它更像原生 App -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Poka 波卡回報</title>
   
-  <!-- PWA Manifest 與 iOS 支援 -->
   <link rel="manifest" href="manifest.json">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -29,9 +27,22 @@
       <button class="btn btn-blue" onclick="reportStatus('delayed')">我晚一點</button>
       <button class="btn btn-yellow" onclick="reportStatus('with_friend')">跟同學在一起</button>
       <button class="btn btn-orange" onclick="reportStatus('busy')">暫時不方便接</button>
-      <button class="btn btn-red" onclick="reportStatus('sos')">SOS 緊急求助</button>
+      <!-- SOS 按鈕由 JS 的 touch 事件控制，不需要 onclick -->
+      <button class="btn btn-red">SOS 緊急求助</button>
     </div>
   </main>
+
+  <!-- 覆蓋全螢幕的確認視窗 (預設隱藏) -->
+  <div id="confirm-modal" class="modal-overlay">
+    <div class="modal-box">
+      <h2 id="modal-title">確認送出？</h2>
+      <p id="modal-desc">您即將傳送狀態與位置給家長</p>
+      <div class="modal-buttons">
+        <button id="btn-cancel" class="btn-modal cancel">取消</button>
+        <button id="btn-confirm" class="btn-modal confirm">確定送出</button>
+      </div>
+    </div>
+  </div>
 
   <!-- 載入 Supabase 套件與主程式 -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>

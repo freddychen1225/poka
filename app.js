@@ -103,7 +103,7 @@ function executeLocationAndSend(statusCode) {
 
       const { error } = await supabaseClient.from('status_logs').insert([
         {
-          child_name: '兒子',
+          child_name: '樂樂',
           status_code: statusCode,
           lat,
           lng,

@@ -101,15 +101,19 @@ function executeLocationAndSend(statusCode) {
 
       msgEl.innerText = "☁️ 定位成功，正在傳送給爸媽...";
 
-      const { error } = await supabaseClient.from('status_logs').insert([
-        {
-          child_name: '樂樂',
-          status_code: statusCode,
-          lat,
-          lng,
-          accuracy
-        }
-      ]);
+      const payload = {
+  child_name: '樂樂',
+  status_code: statusCode,
+  lat,
+  lng,
+  accuracy
+};
+
+console.log("準備送出 status_logs:", payload);
+
+const { error } = await supabaseClient
+  .from('status_logs')
+  .insert([payload]);
 
       if (error) {
         msgEl.innerText = "❌ 傳送失敗";

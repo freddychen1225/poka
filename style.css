@@ -1,85 +1,202 @@
-*, html, body { 
-  box-sizing: border-box; 
-  margin: 0; 
-  padding: 0; 
-  font-family: sans-serif; 
-  /* 徹底禁止 PWA 上下滑動與放大縮小 */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
   overflow: hidden;
-  touch-action: none; 
+  touch-action: manipulation;
   overscroll-behavior: none;
+  width: 100%;
+  height: 100%;
 }
 
-body { 
-  background-color: #f7f6f2; 
-  color: #333; 
-  height: 100vh; 
-  width: 100vw; 
+body {
+  background-color: #f7f6f2;
+  color: #333;
+  width: 100vw;
+  height: 100vh;
 }
 
-.header { text-align: center; padding: 20px 10px; }
-#system-msg { font-size: 14px; color: #666; margin-top: 5px; }
+#app-container {
+  width: 100%;
+  height: 100%;
+}
 
-/* 使用 Grid 排列 2x2 + 底部 1 個大方塊 */
+.header {
+  text-align: center;
+  padding: 18px 12px 12px;
+}
+
+.header h1 {
+  font-size: 30px;
+  line-height: 1.1;
+  margin-bottom: 6px;
+  color: #28251d;
+}
+
+#system-msg {
+  font-size: 15px;
+  color: #666;
+  margin-top: 4px;
+  min-height: 20px;
+}
+
 .button-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  grid-template-rows: 1fr 1fr 1.2fr; /* SOS 按鈕稍微高一點 */
+  grid-template-rows: 1fr 1fr 1.22fr;
   gap: 12px;
-  padding: 0 16px 20px;
-  height: calc(100vh - 80px); /* 扣掉 header 高度 */
+  padding: 0 16px 18px;
+  height: calc(100vh - 92px);
 }
 
 .btn {
   border: none;
-  border-radius: 12px;
-  font-size: 20px;
-  font-weight: bold;
-  color: white;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-  transition: transform 0.1s;
-  /* 讓文字置中 */
+  border-radius: 16px;
+  padding: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding: 10px;
-}
-.btn:active { transform: scale(0.96); }
-
-/* 定義顏色 */
-.btn-green { background-color: #437a22; }
-.btn-blue { background-color: #006494; }
-.btn-yellow { background-color: #d19900; color: #28251d; }
-.btn-orange { background-color: #da7101; }
-
-.btn-red { 
-  background-color: #a13544; 
-  grid-column: 1 / -1; /* 讓 SOS 橫跨兩欄 */
-  font-size: 24px; 
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.12);
+  transition: transform 0.12s ease, box-shadow 0.12s ease, opacity 0.12s ease;
+  -webkit-tap-highlight-color: transparent;
 }
 
-/* 彈出視窗樣式 */
+.btn:active {
+  transform: scale(0.97);
+}
+
+.btn:disabled {
+  opacity: 0.75;
+}
+
+.status-btn {
+  color: #ffffff !important;
+  font-size: clamp(1.3rem, 3.8vw, 1.75rem);
+  font-weight: 800;
+  line-height: 1.25;
+  letter-spacing: 0.02em;
+  text-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.34),
+    0 0 1px rgba(0, 0, 0, 0.24);
+  -webkit-text-stroke: 0.35px rgba(0, 0, 0, 0.18);
+  word-break: break-word;
+}
+
+.btn-green {
+  background-color: #437a22;
+}
+
+.btn-blue {
+  background-color: #006494;
+}
+
+.btn-yellow {
+  background-color: #d19900;
+  color: #ffffff !important;
+}
+
+.btn-orange {
+  background-color: #da7101;
+}
+
+.btn-red {
+  background-color: #a13544;
+  grid-column: 1 / -1;
+  font-size: clamp(1.45rem, 4.2vw, 1.95rem);
+  min-height: 108px;
+}
+
 .modal-overlay {
-  position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-  background: rgba(0,0,0,0.6);
-  display: none; /* 預設隱藏，由 JS 控制顯示 */
-  align-items: center; justify-content: center;
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.6);
+  display: none;
+  align-items: center;
+  justify-content: center;
   z-index: 1000;
+  padding: 20px;
 }
 
 .modal-box {
-  background: white; padding: 24px; border-radius: 16px;
-  width: 80%; max-width: 320px; text-align: center;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  background: #ffffff;
+  padding: 24px 20px;
+  border-radius: 18px;
+  width: min(86vw, 340px);
+  text-align: center;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.22);
 }
 
-.modal-box h2 { margin-bottom: 8px; color: #28251d; }
-.modal-box p { margin-bottom: 24px; color: #666; font-size: 14px; }
-.modal-buttons { display: flex; gap: 12px; }
+.modal-box h2 {
+  margin: 0 0 8px;
+  color: #28251d;
+  font-size: 22px;
+  line-height: 1.35;
+}
+
+.modal-box p {
+  margin: 0 0 22px;
+  color: #666;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.modal-buttons {
+  display: flex;
+  gap: 12px;
+}
 
 .btn-modal {
-  flex: 1; padding: 12px; border: none; border-radius: 8px;
-  font-size: 16px; font-weight: bold;
+  flex: 1;
+  padding: 13px 12px;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 700;
 }
-.btn-modal.cancel { background: #e6e4df; color: #333; }
-.btn-modal.confirm { background: #01696f; color: white; }
+
+.btn-modal.cancel {
+  background: #e6e4df;
+  color: #333;
+}
+
+.btn-modal.confirm {
+  background: #01696f;
+  color: #ffffff;
+}
+
+@media (max-width: 390px) {
+  .header {
+    padding-top: 16px;
+  }
+
+  .header h1 {
+    font-size: 28px;
+  }
+
+  #system-msg {
+    font-size: 14px;
+  }
+
+  .button-grid {
+    gap: 10px;
+    padding: 0 14px 16px;
+  }
+
+  .status-btn {
+    font-size: 1.2rem;
+  }
+
+  .btn-red {
+    min-height: 98px;
+  }
+}

@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Poka 家長端推播設定</title>
+  <meta name="theme-color" content="#0f172a" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="Poka" />
+  <link rel="manifest" href="./manifest.json" />
+  <link rel="apple-touch-icon" href="./icons/icon-192.png" />
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --text: #0f172a;
+      --muted: #475569;
+      --line: #e2e8f0;
+      --primary: #0f766e;
+      --primary-hover: #115e59;
+      --danger: #b91c1c;
+      --ok: #166534;
+      --shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+      --radius: 16px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans TC", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    .wrap {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 24px 16px 48px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 20px;
+      margin-bottom: 16px;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: 28px;
+    }
+
+    h2 {
+      margin: 0 0 12px;
+      font-size: 20px;
+    }
+
+    p {
+      margin: 0 0 12px;
+    }
+
+    .muted {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .btn {
+      appearance: none;
+      border: none;
+      border-radius: 12px;
+      padding: 14px 18px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      width: 100%;
+      background: var(--primary);
+      color: #fff;
+    }
+
+    .btn:hover {
+      background: var(--primary-hover);
+    }
+
+    .btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .status-list {
+      display: grid;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .status-item {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 12px 14px;
+      background: #fff;
+    }
+
+    .status-label {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+
+    .status-value {
+      font-size: 15px;
+      font-weight: 600;
+      word-break: break-word;
+    }
+
+    .ok {
+      color: var(--ok);
+    }
+
+    .fail {
+      color: var(--danger);
+    }
+
+    pre {
+      margin: 0;
+      white-space: pre-wrap;
+      word-break: break-word;
+      font-size: 13px;
+      background: #0f172a;
+      color: #e2e8f0;
+      border-radius: 12px;
+      padding: 14px;
+      overflow: auto;
+    }
+
+    .tips {
+      padding-left: 18px;
+      margin: 0;
+    }
+
+    .tips li {
+      margin-bottom: 8px;
+    }
+
+    .footer-note {
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 8px;
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="card">
+      <h1>Poka 家長端推播設定</h1>
+      <p>此頁面用來在家長手機上啟用推播通知，並將裝置 subscription 寫入 Supabase。</p>
+      <p class="muted">
+        請用已加入主畫面的 PWA 開啟，再按下「啟用推播通知」。
+      </p>
+    </section>
+
+    <section class="card">
+      <h2>環境檢查</h2>
+      <div class="status-list">
+        <div class="status-item">
+          <div class="status-label">HTTPS / 安全環境</div>
+          <div class="status-value" id="check-secure">檢查中...</div>
+        </div>
+        <div class="status-item">
+          <div class="status-label">Service Worker 支援</div>
+          <div class="status-value" id="check-sw">檢查中...</div>
+        </div>
+        <div class="status-item">
+          <div class="status-label">PushManager 支援</div>
+          <div class="status-value" id="check-push">檢查中...</div>
+        </div>
+        <div class="status-item">
+          <div class="status-label">Notification API 支援</div>
+          <div class="status-value" id="check-notification">檢查中...</div>
+        </div>
+        <div class="status-item">
+          <div class="status-label">目前 Notification 權限</div>
+          <div class="status-value" id="check-permission">檢查中...</div>
+        </div>
+        <div class="status-item">
+          <div class="status-label">是否為 PWA standalone</div>
+          <div class="status-value" id="check-standalone">檢查中...</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>啟用推播</h2>
+      <button id="enableBtn" class="btn">啟用推播通知</button>
+      <p class="footer-note" id="hintText">
+        首次綁定時，會要求通知權限並建立 push subscription。
+      </p>
+    </section>
+
+    <section class="card">
+      <h2>執行結果</h2>
+      <pre id="logBox">尚未執行。</pre>
+    </section>
+
+    <section class="card">
+      <h2>注意事項</h2>
+      <ul class="tips">
+        <li>請確認你是從 iPhone 主畫面啟動 PWA，而不是 Safari 分頁直接測。</li>
+        <li>若曾經測過失敗版本，先刪除主畫面 App 再重新加入主畫面較穩定。</li>
+        <li>這一版需要你先填入正確的 Supabase URL、Anon Key、VAPID Public Key、family_id、parent_member_id。</li>
+      </ul>
+    </section>
+  </main>
+
+  <script>
+    // =========================
+    // TODO: 這 5 個值請換成你自己的
+    // =========================
+    const SUPABASE_URL = 'https://kjpxpqxbtslvvmeruofo.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtqcHhwcXhidHNsdnZtZXJ1b2ZvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc0NDAxNjgsImV4cCI6MjA5MzAxNjE2OH0.JAGs-ziFbUsNwXxMkJiKwkiN9O4FVWdDDv5uNfhcPdI';
+    const VAPID_PUBLIC_KEY = 'BM0Wyw7oVL7tf5Oq-1i-EPugtU8nysBRAVYneSMFnzmyLT5YEL1FEh0qw0JFdpk453VfB_A9pPBNFWVktXx1kZI';
+    const TEST_FAMILY_ID = 'a3b8e782-ea47-4fc3-842d-dd2e8f7c1ecd';
+    const TEST_PARENT_MEMBER_ID = '25cfcea4-c12d-4e11-a055-33b89ad0e364';
+
+    // 你的 function URL
+    const FUNCTION_URL =
+      'https://kjpxpqxbtslvvmeruofo.functions.supabase.co/register-push-subscription';
+
+    const $ = (id) => document.getElementById(id);
+    const logBox = $('logBox');
+    const enableBtn = $('enableBtn');
+
+    function setText(id, text, ok = null) {
+      const el = $(id);
+      el.textContent = text;
+      el.classList.remove('ok', 'fail');
+      if (ok === true) el.classList.add('ok');
+      if (ok === false) el.classList.add('fail');
+    }
+
+    function log(message, data = null) {
+      const time = new Date().toLocaleTimeString();
+      let text = `[${time}] ${message}`;
+      if (data !== null) {
+        try {
+          text += '\n' + JSON.stringify(data, null, 2);
+        } catch (e) {
+          text += '\n' + String(data);
+        }
+      }
+      logBox.textContent = text + '\n\n' + logBox.textContent;
+      console.log(message, data ?? '');
+    }
+
+    function urlBase64ToUint8Array(base64String) {
+      const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
+      const base64 = (base64String + padding)
+        .replace(/-/g, '+')
+        .replace(/_/g, '/');
+
+      const rawData = atob(base64);
+      const outputArray = new Uint8Array(rawData.length);
+
+      for (let i = 0; i < rawData.length; ++i) {
+        outputArray[i] = rawData.charCodeAt(i);
+      }
+
+      return outputArray;
+    }
+
+    function checkEnvironment() {
+      const isSecure =
+        window.isSecureContext ||
+        location.hostname === 'localhost' ||
+        location.hostname === '127.0.0.1';
+
+      const hasSW = 'serviceWorker' in navigator;
+      const hasPush = 'PushManager' in window;
+      const hasNotification = 'Notification' in window;
+      const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
+
+      setText('check-secure', isSecure ? 'OK' : 'NG', isSecure);
+      setText('check-sw', hasSW ? 'OK' : 'NG', hasSW);
+      setText('check-push', hasPush ? 'OK' : 'NG', hasPush);
+      setText('check-notification', hasNotification ? 'OK' : 'NG', hasNotification);
+      setText(
+        'check-permission',
+        hasNotification ? Notification.permission : 'unsupported',
+        hasNotification ? Notification.permission === 'granted' : false
+      );
+      setText('check-standalone', isStandalone ? '是' : '否', isStandalone);
+
+      return isSecure && hasSW && hasPush && hasNotification;
+    }
+
+    async function enablePush() {
+      enableBtn.disabled = true;
+      log('開始執行推播綁定');
+
+      try {
+        if (!checkEnvironment()) {
+          throw new Error('環境檢查未通過');
+        }
+
+        if (
+          !SUPABASE_URL ||
+          !SUPABASE_ANON_KEY ||
+          !VAPID_PUBLIC_KEY ||
+          !TEST_FAMILY_ID ||
+          !TEST_PARENT_MEMBER_ID ||
+          SUPABASE_ANON_KEY.includes('請填入') ||
+          VAPID_PUBLIC_KEY.includes('請填入') ||
+          TEST_FAMILY_ID.includes('請填入') ||
+          TEST_PARENT_MEMBER_ID.includes('請填入')
+        ) {
+          throw new Error('請先完成頁面內的 TODO 設定值');
+        }
+
+        log('請求通知權限');
+        const permission = await Notification.requestPermission();
+        setText('check-permission', permission, permission === 'granted');
+
+        if (permission !== 'granted') {
+          throw new Error('通知權限未授權');
+        }
+
+        log('註冊 Service Worker');
+        const registration = await navigator.serviceWorker.register('./sw.js');
+        await navigator.serviceWorker.ready;
+        log('Service Worker 註冊成功');
+
+        let subscription = await registration.pushManager.getSubscription();
+
+        if (subscription) {
+          log('偵測到既有 subscription，沿用現有資料');
+        } else {
+          log('建立新的 Push subscription');
+          subscription = await registration.pushManager.subscribe({
+            userVisibleOnly: true,
+            applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY),
+          });
+        }
+
+        const subJson = subscription.toJSON();
+        log('Push subscription 建立成功', subJson);
+
+        const payload = {
+          family_id: TEST_FAMILY_ID,
+          parent_member_id: TEST_PARENT_MEMBER_ID,
+          endpoint: subJson.endpoint,
+          p256dh: subJson.keys?.p256dh,
+          auth: subJson.keys?.auth,
+          platform: /iPhone|iPad|iPod/i.test(navigator.userAgent) ? 'ios' : 'unknown',
+          browser: navigator.userAgent,
+          pwa_installed: window.matchMedia('(display-mode: standalone)').matches,
+          app_instance_id: crypto.randomUUID(),
+        };
+
+        log('準備送往 Edge Function', payload);
+
+        const res = await fetch(FUNCTION_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'apikey': SUPABASE_ANON_KEY,
+            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+          },
+          body: JSON.stringify(payload),
+        });
+
+        const result = await res.json().catch(() => ({}));
+        log('Edge Function 回應', result);
+
+        if (!res.ok) {
+          throw new Error('寫入資料庫失敗：' + JSON.stringify(result));
+        }
+
+        alert('推播綁定成功');
+      } catch (err) {
+        console.error(err);
+        log('失敗', { message: err.message || String(err) });
+        alert('失敗：' + (err.message || String(err)));
+      } finally {
+        enableBtn.disabled = false;
+      }
+    }
+
+    enableBtn.addEventListener('click', enablePush);
+    checkEnvironment();
+  </script>
+</body>
+</html>

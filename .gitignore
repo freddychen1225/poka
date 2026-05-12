@@ -1,0 +1,13 @@
+# Sensitive local files
+*.txt
+
+# Supabase local temp files
+supabase/.temp/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+
+# Optional
+.env
+.env.*

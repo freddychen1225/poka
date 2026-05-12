@@ -123,7 +123,7 @@
     }
 
     async function registerSW() {
-      const registration = await navigator.serviceWorker.register('/sw.js');
+      const registration = await navigator.serviceWorker.register('./sw.js');
       await navigator.serviceWorker.ready;
       return registration;
     }

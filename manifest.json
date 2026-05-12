@@ -2,7 +2,7 @@
   "name": "Poka 波卡回報",
   "short_name": "Poka",
   "description": "家庭安心通勤助手",
-  "start_url": "./index.html",
+  "start_url": "/parent-setup-push.html",
   "display": "standalone",
   "background_color": "#f7f6f2",
   "theme_color": "#01696f",

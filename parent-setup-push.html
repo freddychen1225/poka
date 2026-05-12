@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Poka 家長端通知啟用</title>
+
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#2563eb">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Poka">
+
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 24px;
+      line-height: 1.6;
+      background: #f8fafc;
+      color: #0f172a;
+    }
+    .card {
+      background: white;
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 8px 24px rgba(0,0,0,.08);
+      margin-bottom: 16px;
+    }
+    h1 { font-size: 28px; margin-bottom: 12px; }
+    h2 { font-size: 18px; margin-bottom: 8px; }
+    button {
+      background: #2563eb;
+      color: white;
+      border: none;
+      border-radius: 12px;
+      padding: 14px 18px;
+      font-size: 16px;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 12px;
+    }
+    button:disabled {
+      background: #94a3b8;
+      cursor: not-allowed;
+    }
+    .hint {
+      font-size: 14px;
+      color: #475569;
+    }
+    .ok { color: #15803d; }
+    .warn { color: #b45309; }
+    .err { color: #b91c1c; }
+    pre {
+      white-space: pre-wrap;
+      word-break: break-word;
+      background: #0f172a;
+      color: #e2e8f0;
+      padding: 12px;
+      border-radius: 12px;
+      overflow: auto;
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Poka 家長端通知啟用</h1>
+    <p>這個頁面先用來測試你的手機能不能成功建立 PWA Push 訂閱。</p>
+    <p class="hint">
+      iPhone 請先用 Safari 開啟，加入主畫面，再從主畫面打開後操作。
+    </p>
+  </div>
+
+  <div class="card">
+    <h2>目前環境檢查</h2>
+    <div id="env"></div>
+  </div>
+
+  <div class="card">
+    <h2>啟用通知</h2>
+    <button id="enableBtn">啟用推播通知</button>
+    <p id="status" class="hint">尚未開始</p>
+  </div>
+
+  <div class="card">
+    <h2>Push Subscription</h2>
+    <pre id="output">尚未產生 subscription</pre>
+  </div>
+
+  <script>
+    const VAPID_PUBLIC_KEY = '請換成你的 VAPID_PUBLIC_KEY';
+
+    const envEl = document.getElementById('env');
+    const statusEl = document.getElementById('status');
+    const outputEl = document.getElementById('output');
+    const enableBtn = document.getElementById('enableBtn');
+
+    function urlBase64ToUint8Array(base64String) {
+      const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
+      const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+      const rawData = window.atob(base64);
+      return Uint8Array.from([...rawData].map((char) => char.charCodeAt(0)));
+    }
+
+    function isStandalone() {
+      return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+    }
+
+    function renderEnv() {
+      const checks = [
+        ['HTTPS', location.protocol === 'https:' || location.hostname === 'localhost'],
+        ['Service Worker', 'serviceWorker' in navigator],
+        ['PushManager', 'PushManager' in window],
+        ['Notification', 'Notification' in window],
+        ['Standalone(PWA)', isStandalone()]
+      ];
+
+      envEl.innerHTML = checks.map(([label, ok]) => {
+        return `<p class="${ok ? 'ok' : 'warn'}">${ok ? '✅' : '⚠️'} ${label}: ${ok}</p>`;
+      }).join('');
+    }
+
+    async function registerSW() {
+      const registration = await navigator.serviceWorker.register('/sw.js');
+      await navigator.serviceWorker.ready;
+      return registration;
+    }
+
+    async function subscribePush() {
+      try {
+        enableBtn.disabled = true;
+        statusEl.className = 'hint';
+        statusEl.textContent = '處理中...';
+
+        if (!('serviceWorker' in navigator)) {
+          throw new Error('此瀏覽器不支援 Service Worker');
+        }
+
+        if (!('PushManager' in window)) {
+          throw new Error('此瀏覽器不支援 Push API');
+        }
+
+        if (!('Notification' in window)) {
+          throw new Error('此瀏覽器不支援 Notification API');
+        }
+
+        if (!isStandalone()) {
+          statusEl.className = 'warn';
+          statusEl.textContent = '目前不是主畫面啟動模式。iPhone 請先加入主畫面，再從主畫面開啟。';
+          enableBtn.disabled = false;
+          return;
+        }
+
+        const permission = await Notification.requestPermission();
+        if (permission !== 'granted') {
+          throw new Error('使用者未允許通知權限');
+        }
+
+        const registration = await registerSW();
+
+        let subscription = await registration.pushManager.getSubscription();
+
+        if (!subscription) {
+          subscription = await registration.pushManager.subscribe({
+            userVisibleOnly: true,
+            applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY)
+          });
+        }
+
+        outputEl.textContent = JSON.stringify(subscription.toJSON(), null, 2);
+        statusEl.className = 'ok';
+        statusEl.textContent = 'Push subscription 建立成功';
+      } catch (err) {
+        console.error(err);
+        statusEl.className = 'err';
+        statusEl.textContent = `失敗：${err.message}`;
+      } finally {
+        enableBtn.disabled = false;
+        renderEnv();
+      }
+    }
+
+    renderEnv();
+    enableBtn.addEventListener('click', subscribePush);
+  </script>
+</body>
+</html>

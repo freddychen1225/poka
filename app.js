@@ -3,7 +3,10 @@
 // ==========================================
 const SUPABASE_URL = 'https://kjpxpqxbtslvvmeruofo.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtqcHhwcXhidHNsdnZtZXJ1b2ZvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc0NDAxNjgsImV4cCI6MjA5MzAxNjE2OH0.JAGs-ziFbUsNwXxMkJiKwkiN9O4FVWdDDv5uNfhcPdI';
+const FAMILY_ID = 'a3b8e782-ea47-4fc3-842d-dd2e8f7c1ecd';
+
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
 
 // ==========================================
 // 狀態對應與 DOM 元素
@@ -26,6 +29,7 @@ const btnSos = document.querySelector('.btn-red');
 let pendingStatusCode = null;
 let pressTimer = null;
 let isSubmitting = false;
+
 
 // ==========================================
 // 共用 UI helper
@@ -64,6 +68,7 @@ function setButtonsDisabled(disabled) {
   });
 }
 
+
 // ==========================================
 // 一般按鈕
 // ==========================================
@@ -93,6 +98,7 @@ btnConfirm.onclick = () => {
     executeLocationAndSend(statusToSend);
   }
 };
+
 
 // ==========================================
 // SOS 長按
@@ -135,8 +141,9 @@ if (btnSos) {
   btnSos.addEventListener('touchmove', cancelPress);
 }
 
+
 // ==========================================
-// 核心發送：只寫入 Supabase
+// 核心發送：寫入 Supabase status_logs
 // ==========================================
 function executeLocationAndSend(statusCode) {
   if (isSubmitting) return;
@@ -166,19 +173,22 @@ function executeLocationAndSend(statusCode) {
           status_code: statusCode,
           lat,
           lng,
-          accuracy
+          accuracy,
+          family_id: FAMILY_ID
         };
 
         console.log('準備送出 status_logs:', payload);
 
-        const { error } = await supabaseClient
+        const { data, error } = await supabaseClient
           .from('status_logs')
-          .insert([payload]);
+          .insert([payload])
+          .select();
 
         if (error) {
           setSystemMessage('❌ 傳送失敗，請再試一次');
           console.error('Supabase Error:', error);
         } else {
+          console.log('status_logs 寫入成功:', data);
           setSystemMessage('✅ 狀態已成功送出！');
           resetIdleMessage(3000);
         }

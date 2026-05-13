@@ -2,7 +2,7 @@
 // 初始化 Supabase
 // ==========================================
 const SUPABASE_URL = 'https://kjpxpqxbtslvvmeruofo.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_EX4uWY2aDihrML2LjGZfBw_WC2W3i6F';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtqcHhwcXhidHNsdnZtZXJ1b2ZvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc0NDAxNjgsImV4cCI6MjA5MzAxNjE2OH0.JAGs-ziFbUsNwXxMkJiKwkiN9O4FVWdDDv5uNfhcPdI';
 const FAMILY_ID = 'a3b8e782-ea47-4fc3-842d-dd2e8f7c1ecd';
 
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);

@@ -14,7 +14,7 @@ self.addEventListener('push', (event) => {
   let data = {
     title: 'Poka 通知',
     body: '你有一則新的孩子回報',
-    url: '/'
+    url: '/parent.html'
   };
 
   try {
@@ -35,7 +35,7 @@ self.addEventListener('push', (event) => {
       icon: '/icons/icon-192.png',
       badge: '/icons/icon-192.png',
       data: {
-        url: data.url || '/'
+        url: data.url || '/parent.html'
       }
     })
   );
@@ -44,13 +44,17 @@ self.addEventListener('push', (event) => {
 self.addEventListener('notificationclick', (event) => {
   event.notification.close();
 
-  const targetUrl = event.notification?.data?.url || '/';
+  const targetUrl = event.notification?.data?.url || '/parent.html';
 
   event.waitUntil(
     clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientList) => {
       for (const client of clientList) {
-        if ('focus' in client) {
-          client.navigate(targetUrl);
+        const currentUrl = new URL(client.url);
+
+        if (currentUrl.origin === self.location.origin) {
+          if ('navigate' in client) {
+            return client.navigate(targetUrl).then(() => client.focus());
+          }
           return client.focus();
         }
       }

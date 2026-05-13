@@ -211,23 +211,19 @@
       <h2>注意事項</h2>
       <ul class="tips">
         <li>請確認你是從 iPhone 主畫面啟動 PWA，而不是 Safari 分頁直接測。</li>
-        <li>若曾經測過失敗版本，先刪除主畫面 App 再重新加入主畫面較穩定。</li>
+        <li>若曾經測過失敗版本，建議先刪除主畫面 App，再重新加入主畫面。</li>
         <li>這一版需要你先填入正確的 Supabase URL、Anon Key、VAPID Public Key、family_id、parent_member_id。</li>
       </ul>
     </section>
   </main>
 
   <script>
-    // =========================
-    // TODO: 這 5 個值請換成你自己的
-    // =========================
     const SUPABASE_URL = 'https://kjpxpqxbtslvvmeruofo.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtqcHhwcXhidHNsdnZtZXJ1b2ZvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc0NDAxNjgsImV4cCI6MjA5MzAxNjE2OH0.JAGs-ziFbUsNwXxMkJiKwkiN9O4FVWdDDv5uNfhcPdI';
     const VAPID_PUBLIC_KEY = 'BE6qwfyoK_AWHkfXOIh1-1bDeTIkdKXpNh388OrOTEV7LPC0I4GZ_hltgRc9euO8h-J8lLvjKTcOwavdYjilv1A';
     const TEST_FAMILY_ID = 'a3b8e782-ea47-4fc3-842d-dd2e8f7c1ecd';
     const TEST_PARENT_MEMBER_ID = '25cfcea4-c12d-4e11-a055-33b89ad0e364';
 
-    // 你的 function URL
     const FUNCTION_URL =
       'https://kjpxpqxbtslvvmeruofo.functions.supabase.co/register-push-subscription';
 
@@ -313,12 +309,12 @@
           !VAPID_PUBLIC_KEY ||
           !TEST_FAMILY_ID ||
           !TEST_PARENT_MEMBER_ID ||
-          SUPABASE_ANON_KEY.includes('請填入') ||
-          VAPID_PUBLIC_KEY.includes('請填入') ||
+          SUPABASE_ANON_KEY.includes('你的_') ||
+          VAPID_PUBLIC_KEY.includes('你的最新') ||
           TEST_FAMILY_ID.includes('請填入') ||
           TEST_PARENT_MEMBER_ID.includes('請填入')
         ) {
-          throw new Error('請先完成頁面內的 TODO 設定值');
+          throw new Error('請先完成頁面內的設定值');
         }
 
         log('請求通知權限');
@@ -337,14 +333,17 @@
         let subscription = await registration.pushManager.getSubscription();
 
         if (subscription) {
-          log('偵測到既有 subscription，沿用現有資料');
-        } else {
-          log('建立新的 Push subscription');
-          subscription = await registration.pushManager.subscribe({
-            userVisibleOnly: true,
-            applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY),
-          });
+          log('偵測到既有 subscription，先取消舊訂閱');
+          await subscription.unsubscribe();
+          subscription = null;
+          log('舊 subscription 已取消');
         }
+
+        log('建立新的 Push subscription');
+        subscription = await registration.pushManager.subscribe({
+          userVisibleOnly: true,
+          applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY),
+        });
 
         const subJson = subscription.toJSON();
         log('Push subscription 建立成功', subJson);
@@ -380,7 +379,7 @@
           throw new Error('寫入資料庫失敗：' + JSON.stringify(result));
         }
 
-        alert('推播綁定成功');
+        alert('推播綁定成功，請回 Supabase 檢查 push_subscriptions 是否新增最新資料。');
       } catch (err) {
         console.error(err);
         log('失敗', { message: err.message || String(err) });

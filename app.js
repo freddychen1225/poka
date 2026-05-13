@@ -2,11 +2,10 @@
 // 初始化 Supabase
 // ==========================================
 const SUPABASE_URL = 'https://kjpxpqxbtslvvmeruofo.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtqcHhwcXhidHNsdnZtZXJ1b2ZvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc0NDAxNjgsImV4cCI6MjA5MzAxNjE2OH0.JAGs-ziFbUsNwXxMkJiKwkiN9O4FVWdDDv5uNfhcPdI';
+const SUPABASE_KEY = 'sb_publishable_EX4uWY2aDihrML2LjGZfBw_WC2W3i6F';
 const FAMILY_ID = 'a3b8e782-ea47-4fc3-842d-dd2e8f7c1ecd';
 
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
 
 // ==========================================
 // 狀態對應與 DOM 元素
@@ -29,7 +28,6 @@ const btnSos = document.querySelector('.btn-red');
 let pendingStatusCode = null;
 let pressTimer = null;
 let isSubmitting = false;
-
 
 // ==========================================
 // 共用 UI helper
@@ -68,7 +66,6 @@ function setButtonsDisabled(disabled) {
   });
 }
 
-
 // ==========================================
 // 一般按鈕
 // ==========================================
@@ -77,10 +74,7 @@ function reportStatus(statusCode) {
   if (statusCode === 'sos') return;
   if (!statusConfig[statusCode]) return;
 
-  openConfirmModal(
-    statusCode,
-    `傳送「${statusConfig[statusCode].text}」？`
-  );
+  openConfirmModal(statusCode, `傳送「${statusConfig[statusCode].text}」？`);
 }
 
 btnCancel.onclick = () => {
@@ -98,7 +92,6 @@ btnConfirm.onclick = () => {
     executeLocationAndSend(statusToSend);
   }
 };
-
 
 // ==========================================
 // SOS 長按
@@ -140,7 +133,6 @@ if (btnSos) {
   btnSos.addEventListener('touchcancel', cancelPress);
   btnSos.addEventListener('touchmove', cancelPress);
 }
-
 
 // ==========================================
 // 核心發送：寫入 Supabase status_logs

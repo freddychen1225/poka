@@ -179,16 +179,15 @@ function executeLocationAndSend(statusCode) {
 
         console.log('準備送出 status_logs:', payload);
 
-        const { data, error } = await supabaseClient
+        const { error } = await supabaseClient
           .from('status_logs')
-          .insert([payload])
-          .select();
+          .insert([payload]);
 
         if (error) {
           setSystemMessage('❌ 傳送失敗，請再試一次');
           console.error('Supabase Error:', error);
         } else {
-          console.log('status_logs 寫入成功:', data);
+          console.log('status_logs 寫入成功');
           setSystemMessage('✅ 狀態已成功送出！');
           resetIdleMessage(3000);
         }

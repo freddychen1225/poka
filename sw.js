@@ -14,7 +14,7 @@ self.addEventListener('push', (event) => {
   let data = {
     title: 'Poka 通知',
     body: '你有一則新的孩子回報',
-    url: '/parent.html'
+    url: '/poka/parent.html'
   };
 
   try {
@@ -32,10 +32,10 @@ self.addEventListener('push', (event) => {
   event.waitUntil(
     self.registration.showNotification(data.title || 'Poka 通知', {
       body: data.body || '',
-      icon: '/icons/icon-192.png',
-      badge: '/icons/icon-192.png',
+      icon: '/poka/icons/icon-192.png',
+      badge: '/poka/icons/icon-192.png',
       data: {
-        url: data.url || '/parent.html'
+        url: data.url || '/poka/parent.html'
       }
     })
   );
@@ -44,7 +44,7 @@ self.addEventListener('push', (event) => {
 self.addEventListener('notificationclick', (event) => {
   event.notification.close();
 
-  const targetUrl = event.notification?.data?.url || '/parent.html';
+  const targetUrl = event.notification?.data?.url || '/poka/parent.html';
 
   event.waitUntil(
     clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientList) => {

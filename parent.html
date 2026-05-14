@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Poka 家長端 - 狀態監測</title>
   <link rel="stylesheet" href="style.css">
-  <!-- 加入家長端專用的 CSS 樣式 -->
+
   <style>
     .dashboard {
       padding: 20px;
@@ -13,35 +13,66 @@
       flex-direction: column;
       gap: 15px;
     }
+
     .status-card {
       background: white;
       border-radius: 16px;
       padding: 24px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
       text-align: center;
     }
-    #status-icon { font-size: 64px; margin-bottom: 10px; }
-    #status-text { font-size: 28px; font-weight: bold; margin-bottom: 8px; }
-    #time-text { font-size: 14px; color: #666; margin-bottom: 20px; }
-    
+
+    #status-icon {
+      font-size: 64px;
+      margin-bottom: 10px;
+    }
+
+    #status-text {
+      font-size: 28px;
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+
+    #time-text {
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 20px;
+    }
+
     .map-btn {
       display: block;
       width: 100%;
       padding: 16px;
-      background-color: #01696f; /* Poka 主題色 */
+      background-color: #01696f;
       color: white;
       text-decoration: none;
       font-size: 18px;
       font-weight: bold;
       border-radius: 12px;
       text-align: center;
+      box-sizing: border-box;
+      margin-top: 12px;
     }
-    .map-btn:active { transform: scale(0.98); }
-    .map-btn.disabled { background-color: #ccc; pointer-events: none; }
+
+    .map-btn:active {
+      transform: scale(0.98);
+    }
+
+    .map-btn.disabled {
+      background-color: #ccc;
+      pointer-events: none;
+    }
+
+    .settings-btn {
+      background-color: #334155;
+    }
+
+    .settings-btn:hover {
+      background-color: #1e293b;
+    }
   </style>
 </head>
 <body>
-  
   <div class="header">
     <h1>Poka 家長端</h1>
     <p>隨時掌握孩子的最新動態</p>
@@ -52,15 +83,17 @@
       <div id="status-icon">⏳</div>
       <div id="status-text">正在讀取狀態...</div>
       <div id="time-text">--</div>
-      
-      <!-- 這個連結會透過 JavaScript 動態替換成真正的 Google Maps 網址 -->
+
       <a href="#" id="map-link" class="map-btn disabled" target="_blank" rel="noopener noreferrer">
         📍 在地圖上查看
+      </a>
+
+      <a href="./parent-setup-push.html" class="map-btn settings-btn">
+        🔔 推播通知設定
       </a>
     </div>
   </main>
 
-  <!-- 載入 Supabase 套件與家長端主程式 -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="parent.js"></script>
 </body>

@@ -70,6 +70,20 @@ function renderHistory(records) {
     const createdAt = new Date(record.created_at);
     const message = escapeHtml(getStatusMessage(record));
 
+    const hasMap = record.lat && record.lng;
+    const mapHtml = hasMap
+      ? `<div class="history-actions">
+           <a
+             class="history-map-link"
+             href="https://www.google.com/maps/search/?api=1&query=${record.lat},${record.lng}"
+             target="_blank"
+             rel="noopener noreferrer"
+           >
+             📍 在地圖上查看
+           </a>
+         </div>`
+      : '';
+
     return `
       <div class="history-item">
         <div class="history-top">
@@ -77,6 +91,7 @@ function renderHistory(records) {
           <div class="history-time">${formatDateTime(createdAt)}</div>
         </div>
         <div class="history-message">${message}</div>
+        ${mapHtml}
       </div>
     `;
   }).join('');

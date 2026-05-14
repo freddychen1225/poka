@@ -23,7 +23,7 @@
       --danger: #b91c1c;
       --ok: #166534;
       --shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
-      --radius: 16px;
+      --radius: 20px;
     }
 
     * {
@@ -43,10 +43,33 @@
       line-height: 1.6;
     }
 
+    .top-header {
+      text-align: center;
+      padding: 30px 20px 10px;
+    }
+
+    .brand-mark {
+      display: inline-block;
+      font-size: clamp(2.8rem, 7vw, 4.2rem);
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      line-height: 0.96;
+      margin: 0;
+      color: #0f172a;
+      text-shadow: 0 6px 20px rgba(15, 23, 42, 0.08);
+    }
+
+    .brand-sub {
+      margin: 10px 0 0;
+      font-size: clamp(1rem, 3vw, 1.2rem);
+      color: #4b5563;
+      font-weight: 700;
+    }
+
     .wrap {
-      max-width: 760px;
+      max-width: 860px;
       margin: 0 auto;
-      padding: 24px 16px 48px;
+      padding: 14px 16px 16px;
     }
 
     .card {
@@ -59,13 +82,16 @@
     }
 
     h1 {
-      margin: 0 0 8px;
+      margin: 0 0 10px;
       font-size: 28px;
+      font-weight: 900;
+      line-height: 1.2;
     }
 
     h2 {
       margin: 0 0 12px;
       font-size: 20px;
+      font-weight: 900;
     }
 
     p {
@@ -74,20 +100,21 @@
 
     .muted {
       color: var(--muted);
-      font-size: 14px;
+      font-size: 15px;
     }
 
     .btn {
       appearance: none;
       border: none;
-      border-radius: 12px;
-      padding: 14px 18px;
-      font-size: 16px;
-      font-weight: 700;
+      border-radius: 16px;
+      padding: 16px 18px;
+      font-size: 20px;
+      font-weight: 900;
       cursor: pointer;
       width: 100%;
       background: var(--primary);
       color: #fff;
+      box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
     }
 
     .btn:hover {
@@ -107,7 +134,7 @@
 
     .status-item {
       border: 1px solid var(--line);
-      border-radius: 12px;
+      border-radius: 14px;
       padding: 12px 14px;
       background: #fff;
     }
@@ -120,7 +147,7 @@
 
     .status-value {
       font-size: 15px;
-      font-weight: 600;
+      font-weight: 700;
       word-break: break-word;
     }
 
@@ -139,7 +166,7 @@
       font-size: 13px;
       background: #0f172a;
       color: #e2e8f0;
-      border-radius: 12px;
+      border-radius: 14px;
       padding: 14px;
       overflow: auto;
     }
@@ -160,24 +187,43 @@
     }
 
     .back-link {
-      display: inline-block;
-      margin-top: 8px;
-      color: var(--primary);
-      font-size: 14px;
+      display: block;
+      margin-top: 16px;
+      padding: 16px 18px;
+      background: #d9f3ef;
+      color: #0f766e;
+      border-radius: 16px;
       text-decoration: none;
+      font-size: 28px;
+      font-weight: 900;
+      text-align: center;
+      box-shadow: 0 10px 24px rgba(15, 23, 42, 0.05);
+    }
+
+    .app-footer {
+      text-align: center;
+      padding: 4px 20px calc(16px + env(safe-area-inset-bottom));
+      font-size: 14px;
+      color: #64748b;
       font-weight: 600;
+      letter-spacing: 0.02em;
     }
   </style>
 </head>
 <body>
+  <div class="top-header">
+    <h1 class="brand-mark">Poka 家長端</h1>
+    <p class="brand-sub">推播通知設定</p>
+  </div>
+
   <main class="wrap">
     <section class="card">
-      <h1>Poka 家長端推播設定</h1>
+      <h1>家長端推播設定</h1>
       <p>此頁面用來在家長手機上啟用推播通知，並將裝置 subscription 寫入 Supabase。</p>
       <p class="muted">
         請用已加入主畫面的 PWA 開啟，再按下「啟用推播通知」。
       </p>
-      <a href="./parent.html" class="back-link">← 返回家長主頁</a>
+      <a href="./parent.html" class="back-link">⭠ 返回家長主頁</a>
     </section>
 
     <section class="card">
@@ -228,6 +274,8 @@
       </ul>
     </section>
   </main>
+
+  <footer class="app-footer">Freddy &amp; Perplexity 共同協作</footer>
 
   <script>
     const SUPABASE_URL = 'https://kjpxpqxbtslvvmeruofo.supabase.co';

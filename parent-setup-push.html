@@ -379,7 +379,8 @@
           throw new Error('寫入資料庫失敗：' + JSON.stringify(result));
         }
 
-        alert('推播綁定成功，請回 Supabase 檢查 push_subscriptions 是否新增最新資料。');
+        alert('推播綁定成功，將返回家長主頁。');
+        window.location.href = './parent.html';
       } catch (err) {
         console.error(err);
         log('失敗', { message: err.message || String(err) });

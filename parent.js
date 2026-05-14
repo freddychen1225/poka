@@ -22,8 +22,9 @@ function getStatusKey(record) {
   return record?.status_code || record?.status_type || '';
 }
 
-function getStatusMessage(record) {
-  return record?.message || record?.note || '沒有補充說明';
+function getRawStatusMessage(record) {
+  const raw = record?.message || record?.note || '';
+  return String(raw).trim();
 }
 
 function getStatusDisplay(record) {
@@ -36,7 +37,8 @@ function updateDashboard(record) {
     iconEl.innerText = '📭';
     textEl.innerText = '目前沒有任何紀錄';
     timeEl.innerText = '--';
-    detailEl.innerText = '尚未收到孩子的回報。';
+    detailEl.style.display = 'none';
+    detailEl.innerText = '';
     mapLinkEl.href = '#';
     mapLinkEl.classList.add('disabled');
     return;
@@ -44,11 +46,19 @@ function updateDashboard(record) {
 
   const config = getStatusDisplay(record);
   const createdAt = new Date(record.created_at);
+  const message = getRawStatusMessage(record);
 
   iconEl.innerText = config.icon;
   textEl.innerText = config.text;
   timeEl.innerText = `更新時間：${formatDateTime(createdAt)} (${timeAgo(createdAt)})`;
-  detailEl.innerText = getStatusMessage(record);
+
+  if (message) {
+    detailEl.style.display = 'block';
+    detailEl.innerText = message;
+  } else {
+    detailEl.style.display = 'none';
+    detailEl.innerText = '';
+  }
 
   if (record.lat && record.lng) {
     mapLinkEl.href = `https://www.google.com/maps/search/?api=1&query=${record.lat},${record.lng}`;
@@ -68,7 +78,12 @@ function renderHistory(records) {
   historyListEl.innerHTML = records.map((record) => {
     const config = getStatusDisplay(record);
     const createdAt = new Date(record.created_at);
-    const message = escapeHtml(getStatusMessage(record));
+    const message = getRawStatusMessage(record);
+    const safeMessage = escapeHtml(message);
+
+    const messageHtml = message
+      ? `<div class="history-message">${safeMessage}</div>`
+      : '';
 
     const hasMap = record.lat && record.lng;
     const mapHtml = hasMap
@@ -90,7 +105,7 @@ function renderHistory(records) {
           <div class="history-status">${config.icon} ${config.text}</div>
           <div class="history-time">${formatDateTime(createdAt)}</div>
         </div>
-        <div class="history-message">${message}</div>
+        ${messageHtml}
         ${mapHtml}
       </div>
     `;
@@ -107,7 +122,9 @@ async function fetchDashboardData() {
   if (error) {
     console.error('讀取失敗:', error);
     textEl.innerText = '資料讀取失敗';
-    detailEl.innerText = error.message || '請稍後再試';
+    timeEl.innerText = '--';
+    detailEl.style.display = 'none';
+    detailEl.innerText = '';
     historyListEl.innerHTML = `<div class="empty-text">讀取紀錄失敗</div>`;
     lastUpdatedEl.innerText = '同步失敗';
     return;
@@ -129,8 +146,7 @@ function subscribeToChanges() {
     .on(
       'postgres_changes',
       { event: 'INSERT', schema: 'public', table: 'status_logs' },
-      async (payload) => {
-        console.log('收到新狀態！', payload.new);
+      async () => {
         await fetchDashboardData();
       }
     )

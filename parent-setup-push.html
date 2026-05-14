@@ -9,7 +9,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <meta name="apple-mobile-web-app-title" content="Poka" />
   <link rel="manifest" href="./manifest-parent.json" />
-  <link rel="apple-touch-icon" href="./icons/icon-192.png" />
+  <link rel="apple-touch-icon" href="./icons/parent-apple-touch-icon.png" />
+
   <style>
     :root {
       --bg: #f8fafc;
@@ -29,11 +30,16 @@
       box-sizing: border-box;
     }
 
-    body {
+    html, body {
       margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans TC", sans-serif;
+      padding: 0;
+      min-height: 100%;
       background: var(--bg);
       color: var(--text);
+      overflow-x: hidden;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans TC", sans-serif;
       line-height: 1.6;
     }
 
@@ -152,6 +158,15 @@
       color: var(--muted);
       margin-top: 8px;
     }
+
+    .back-link {
+      display: inline-block;
+      margin-top: 8px;
+      color: var(--primary);
+      font-size: 14px;
+      text-decoration: none;
+      font-weight: 600;
+    }
   </style>
 </head>
 <body>
@@ -162,6 +177,7 @@
       <p class="muted">
         請用已加入主畫面的 PWA 開啟，再按下「啟用推播通知」。
       </p>
+      <a href="./parent.html" class="back-link">← 返回家長主頁</a>
     </section>
 
     <section class="card">
@@ -186,10 +202,6 @@
         <div class="status-item">
           <div class="status-label">目前 Notification 權限</div>
           <div class="status-value" id="check-permission">檢查中...</div>
-        </div>
-        <div class="status-item">
-          <div class="status-label">是否為 PWA standalone</div>
-          <div class="status-value" id="check-standalone">檢查中...</div>
         </div>
       </div>
     </section>
@@ -278,7 +290,6 @@
       const hasSW = 'serviceWorker' in navigator;
       const hasPush = 'PushManager' in window;
       const hasNotification = 'Notification' in window;
-      const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
 
       setText('check-secure', isSecure ? 'OK' : 'NG', isSecure);
       setText('check-sw', hasSW ? 'OK' : 'NG', hasSW);
@@ -289,7 +300,6 @@
         hasNotification ? Notification.permission : 'unsupported',
         hasNotification ? Notification.permission === 'granted' : false
       );
-      setText('check-standalone', isStandalone ? '是' : '否', isStandalone);
 
       return isSecure && hasSW && hasPush && hasNotification;
     }
@@ -356,7 +366,9 @@
           auth: subJson.keys?.auth,
           platform: /iPhone|iPad|iPod/i.test(navigator.userAgent) ? 'ios' : 'unknown',
           browser: navigator.userAgent,
-          pwa_installed: window.matchMedia('(display-mode: standalone)').matches,
+          pwa_installed:
+            window.matchMedia('(display-mode: standalone)').matches ||
+            window.navigator.standalone === true,
           app_instance_id: crypto.randomUUID(),
         };
 

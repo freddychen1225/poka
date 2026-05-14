@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Poka 家長端 - 狀態監測</title>
   <link rel="stylesheet" href="style.css">
+  <link rel="manifest" href="./manifest-parent.json">
+  <link rel="apple-touch-icon" sizes="180x180" href="./icons/parent-apple-touch-icon.png">
+  <meta name="theme-color" content="#0f766e">
 
   <style>
     html, body {
@@ -79,6 +82,7 @@
     }
 
     #detail-text {
+      display: none;
       font-size: 16px;
       color: #374151;
       margin-bottom: 18px;
@@ -207,7 +211,7 @@
       <div id="status-icon">⏳</div>
       <div id="status-text">正在讀取狀態...</div>
       <div id="time-text">--</div>
-      <div id="detail-text">請稍候，正在同步最新回報。</div>
+      <div id="detail-text"></div>
 
       <a href="#" id="map-link" class="action-btn disabled" target="_blank" rel="noopener noreferrer">
         📍 在地圖上查看

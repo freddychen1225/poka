@@ -11,14 +11,17 @@
       padding: 20px;
       display: flex;
       flex-direction: column;
-      gap: 15px;
+      gap: 16px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
     }
 
     .status-card {
-      background: white;
-      border-radius: 16px;
-      padding: 24px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
       text-align: center;
     }
 
@@ -36,10 +39,29 @@
     #time-text {
       font-size: 14px;
       color: #666;
-      margin-bottom: 20px;
+      margin-bottom: 8px;
     }
 
-    .map-btn {
+    #detail-text {
+      font-size: 15px;
+      color: #334155;
+      margin-bottom: 20px;
+      line-height: 1.5;
+    }
+
+    .section-title {
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 14px;
+      color: #0f172a;
+    }
+
+    .meta-text {
+      font-size: 14px;
+      color: #64748b;
+    }
+
+    .action-btn {
       display: block;
       width: 100%;
       padding: 16px;
@@ -54,11 +76,11 @@
       margin-top: 12px;
     }
 
-    .map-btn:active {
+    .action-btn:active {
       transform: scale(0.98);
     }
 
-    .map-btn.disabled {
+    .action-btn.disabled {
       background-color: #ccc;
       pointer-events: none;
     }
@@ -70,6 +92,49 @@
     .settings-btn:hover {
       background-color: #1e293b;
     }
+
+    .history-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .history-item {
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 14px;
+      background: #f8fafc;
+    }
+
+    .history-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 6px;
+    }
+
+    .history-status {
+      font-weight: bold;
+      color: #0f172a;
+    }
+
+    .history-time {
+      font-size: 13px;
+      color: #64748b;
+      white-space: nowrap;
+    }
+
+    .history-message {
+      font-size: 14px;
+      color: #334155;
+      line-height: 1.5;
+    }
+
+    .empty-text {
+      font-size: 15px;
+      color: #64748b;
+    }
   </style>
 </head>
 <body>
@@ -79,19 +144,32 @@
   </div>
 
   <main class="dashboard">
-    <div class="status-card">
+    <section class="card status-card">
       <div id="status-icon">⏳</div>
       <div id="status-text">正在讀取狀態...</div>
       <div id="time-text">--</div>
+      <div id="detail-text">請稍候，正在同步最新回報。</div>
 
-      <a href="#" id="map-link" class="map-btn disabled" target="_blank" rel="noopener noreferrer">
+      <a href="#" id="map-link" class="action-btn disabled" target="_blank" rel="noopener noreferrer">
         📍 在地圖上查看
       </a>
 
-      <a href="./parent-setup-push.html" class="map-btn settings-btn">
+      <a href="./parent-setup-push.html" class="action-btn settings-btn">
         🔔 推播通知設定
       </a>
-    </div>
+    </section>
+
+    <section class="card">
+      <div class="section-title">最後更新</div>
+      <div id="last-updated-text" class="meta-text">尚未同步</div>
+    </section>
+
+    <section class="card">
+      <div class="section-title">最近幾筆回報</div>
+      <div id="history-list" class="history-list">
+        <div class="empty-text">正在讀取紀錄...</div>
+      </div>
+    </section>
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>

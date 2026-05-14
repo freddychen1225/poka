@@ -21,7 +21,6 @@
       --muted: #6b7280;
       --shadow: 0 10px 28px rgba(15, 23, 42, 0.10);
       --radius-xl: 28px;
-      --radius-lg: 24px;
     }
 
     * {
@@ -31,29 +30,37 @@
     html, body {
       margin: 0;
       padding: 0;
-      min-height: 100%;
+      height: 100%;
+      min-height: 100dvh;
       background: var(--bg);
       color: var(--text);
       overflow-x: hidden;
-      overflow-y: auto;
+      overflow-y: hidden;
       -webkit-overflow-scrolling: touch;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans TC", sans-serif;
     }
 
     body {
-      padding-bottom: calc(28px + env(safe-area-inset-bottom));
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      padding-bottom: calc(8px + env(safe-area-inset-bottom));
     }
 
     #app-container {
       width: 100%;
       max-width: 860px;
       margin: 0 auto;
-      padding: 24px 20px 0;
+      padding: 18px 20px 0;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
     }
 
     .header {
       text-align: center;
-      padding: 18px 8px 20px;
+      padding: 10px 8px 16px;
+      flex-shrink: 0;
     }
 
     .brand-mark {
@@ -78,19 +85,20 @@
     .button-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 16px;
+      gap: 14px;
       align-items: stretch;
+      flex: 1;
     }
 
     .status-btn {
       appearance: none;
       border: none;
       border-radius: var(--radius-xl);
-      min-height: 180px;
-      padding: 18px 14px;
+      min-height: 168px;
+      padding: 16px 12px;
       color: #fff;
-      font-size: clamp(2rem, 5vw, 2.7rem);
-      line-height: 1.18;
+      font-size: clamp(1.95rem, 5vw, 2.55rem);
+      line-height: 1.1;
       font-weight: 900;
       text-align: center;
       display: flex;
@@ -117,16 +125,17 @@
     .btn-red {
       background: #ab3648;
       grid-column: 1 / -1;
-      min-height: 150px;
+      min-height: 170px;
     }
 
     .app-footer {
       text-align: center;
-      padding: 24px 20px calc(10px + env(safe-area-inset-bottom));
+      padding: 12px 20px calc(4px + env(safe-area-inset-bottom));
       font-size: 14px;
       color: #64748b;
       font-weight: 600;
       letter-spacing: 0.02em;
+      flex-shrink: 0;
     }
 
     .modal-overlay {
@@ -195,21 +204,30 @@
 
     @media (max-width: 480px) {
       #app-container {
-        padding: 18px 16px 0;
+        padding: 14px 14px 0;
+      }
+
+      .header {
+        padding: 6px 6px 12px;
       }
 
       .button-grid {
-        gap: 14px;
+        gap: 12px;
       }
 
       .status-btn {
-        min-height: 165px;
-        font-size: clamp(1.8rem, 6vw, 2.35rem);
-        padding: 14px 12px;
+        min-height: 156px;
+        font-size: clamp(1.75rem, 6vw, 2.2rem);
+        padding: 12px 10px;
+        line-height: 1.08;
       }
 
       .btn-red {
-        min-height: 138px;
+        min-height: 164px;
+      }
+
+      .app-footer {
+        padding: 10px 16px calc(2px + env(safe-area-inset-bottom));
       }
     }
   </style>
@@ -229,10 +247,10 @@
         我晚一點
       </button>
       <button class="status-btn btn-yellow" onclick="reportStatus('with_friend')">
-        跟同學在一起
+        跟同學<br>在一起
       </button>
       <button class="status-btn btn-orange" onclick="reportStatus('busy')">
-        暫時不方便接
+        暫時<br>不方便接
       </button>
       <button class="status-btn btn-red">
         SOS 緊急求助

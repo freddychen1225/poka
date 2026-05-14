@@ -2,7 +2,7 @@
   "name": "Poka 家長端",
   "short_name": "Poka家長",
   "description": "Poka 家長端推播與狀態查看",
-  "start_url": "./parent-setup-push.html",
+  "start_url": "./parent.html",
   "scope": "./",
   "display": "standalone",
   "background_color": "#f8fafc",

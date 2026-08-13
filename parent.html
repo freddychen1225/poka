@@ -168,6 +168,9 @@
       color: #111827;
       line-height: 1.4;
       word-break: break-word;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
 
     .history-time {
@@ -215,6 +218,44 @@
       color: #64748b;
       font-weight: 600;
       letter-spacing: 0.02em;
+    }
+
+    /* 新增：狀態圓點顏色，與孩子端按鈕顏色一致 */
+    .status-dot {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border-radius: 999px;
+      flex-shrink: 0;
+      box-shadow: 0 0 0 3px rgba(148, 163, 184, 0.25);
+    }
+
+    .status-arrived {
+      background: #3f861d;   /* 孩子端 btn-green */
+    }
+
+    .status-delayed {
+      background: #126e9f;   /* 孩子端 btn-blue */
+    }
+
+    .status-with_friend {
+      background: #d8a100;   /* 孩子端 btn-yellow */
+    }
+
+    .status-busy {
+      background: #e07a00;   /* 孩子端 btn-orange */
+    }
+
+    .status-left_home {
+      background: #2f6f72;   /* 孩子端 btn-soft-teal */
+    }
+
+    .status-arrived_home {
+      background: #374151;   /* 孩子端 btn-soft-navy */
+    }
+
+    .status-sos {
+      background: #ab3648;   /* 孩子端紅色 SOS 按鈕 */
     }
   </style>
 </head>

@@ -69,10 +69,18 @@
       text-align: center;
     }
 
+    /* 主卡片的大燈號容器：
+       一般狀態用彩色圓點（透過 class 上色），SOS 則顯示 emoji */
     #status-icon {
-      font-size: 72px;
-      line-height: 1;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 80px;
+      height: 80px;
+      border-radius: 999px;
       margin-bottom: 12px;
+      font-size: 48px; /* 給 SOS emoji 用 */
+      background: transparent;
     }
 
     #status-text {
@@ -220,7 +228,7 @@
       letter-spacing: 0.02em;
     }
 
-    /* 新增：狀態圓點顏色，與孩子端按鈕顏色一致 */
+    /* 狀態圓點顏色（列表用），與孩子端按鈕顏色完全一致 */
     .status-dot {
       display: inline-block;
       width: 16px;
@@ -253,10 +261,7 @@
     .status-arrived_home {
       background: #374151;   /* 孩子端 btn-soft-navy */
     }
-
-    .status-sos {
-      background: #ab3648;   /* 孩子端紅色 SOS 按鈕 */
-    }
+    /* SOS 小燈號仍用 emoji，不使用顏色圓點 class */
   </style>
 </head>
 <body>

@@ -2,12 +2,15 @@ const SUPABASE_URL = 'https://kjpxpqxbtslvvmeruofo.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtqcHhwcXhidHNsdnZtZXJ1b2ZvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc0NDAxNjgsImV4cCI6MjA5MzAxNjE2OH0.JAGs-ziFbUsNwXxMkJiKwkiN9O4FVWdDDv5uNfhcPdI';
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+// 狀態對應表：加入 left_home / arrived_home
 const statusConfig = {
-  arrived: { text: '我到了', icon: '🟢' },
-  delayed: { text: '我晚一點', icon: '🔵' },
-  with_friend: { text: '跟同學在一起', icon: '🟡' },
-  busy: { text: '暫時不方便接', icon: '🟠' },
-  sos: { text: 'SOS 緊急求助', icon: '🚨' }
+  arrived:      { text: '我到了',       icon: '🟢' },
+  delayed:      { text: '我晚一點',     icon: '🔵' },
+  with_friend:  { text: '跟同學在一起', icon: '🟡' },
+  busy:         { text: '暫時不方便接', icon: '🟠' },
+  left_home:    { text: '我出門了',     icon: '🟢' },
+  arrived_home: { text: '我到家了',     icon: '🔵' },
+  sos:          { text: 'SOS 緊急求助', icon: '🚨' }
 };
 
 const iconEl = document.getElementById('status-icon');
@@ -34,19 +37,19 @@ function getStatusDisplay(record) {
 
 function updateDashboard(record) {
   if (!record) {
-    iconEl.innerText = '📭';
-    textEl.innerText = '目前沒有任何紀錄';
-    timeEl.innerText = '--';
+    iconEl.innerText   = '📭';
+    textEl.innerText   = '目前沒有任何紀錄';
+    timeEl.innerText   = '--';
     detailEl.style.display = 'none';
     detailEl.innerText = '';
-    mapLinkEl.href = '#';
+    mapLinkEl.href     = '#';
     mapLinkEl.classList.add('disabled');
     return;
   }
 
-  const config = getStatusDisplay(record);
-  const createdAt = new Date(record.created_at);
-  const message = getRawStatusMessage(record);
+  const config     = getStatusDisplay(record);
+  const createdAt  = new Date(record.created_at);
+  const message    = getRawStatusMessage(record);
 
   iconEl.innerText = config.icon;
   textEl.innerText = config.text;
@@ -76,9 +79,9 @@ function renderHistory(records) {
   }
 
   historyListEl.innerHTML = records.map((record) => {
-    const config = getStatusDisplay(record);
-    const createdAt = new Date(record.created_at);
-    const message = getRawStatusMessage(record);
+    const config     = getStatusDisplay(record);
+    const createdAt  = new Date(record.created_at);
+    const message    = getRawStatusMessage(record);
     const safeMessage = escapeHtml(message);
 
     const messageHtml = message
@@ -131,7 +134,7 @@ async function fetchDashboardData() {
   }
 
   const records = data || [];
-  const latest = records[0] || null;
+  const latest  = records[0] || null;
 
   updateDashboard(latest);
   renderHistory(records);

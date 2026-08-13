@@ -2,15 +2,15 @@ const SUPABASE_URL = 'https://kjpxpqxbtslvvmeruofo.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtqcHhwcXhidHNsdnZtZXJ1b2ZvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc0NDAxNjgsImV4cCI6MjA5MzAxNjE2OH0.JAGs-ziFbUsNwXxMkJiKwkiN9O4FVWdDDv5uNfhcPdI';
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-// 狀態對應表：文字 + 圓點 class
+// 狀態對應表：文字 + 列表圓點 class + 是否 SOS
 const statusConfig = {
-  arrived:      { text: '我到了',       icon: '🟢',  dotClass: 'status-arrived' },
-  delayed:      { text: '我晚一點',     icon: '🔵',  dotClass: 'status-delayed' },
-  with_friend:  { text: '跟同學在一起', icon: '🟡',  dotClass: 'status-with_friend' },
-  busy:         { text: '暫時不方便接', icon: '🟠',  dotClass: 'status-busy' },
-  left_home:    { text: '我出門了',     icon: '🟢',  dotClass: 'status-left_home' },
-  arrived_home: { text: '我到家了',     icon: '🔵',  dotClass: 'status-arrived_home' },
-  sos:          { text: 'SOS 緊急求助', icon: '🚨',  dotClass: 'status-sos' }
+  arrived:      { text: '我到了',       listDotClass: 'status-arrived',      isSos: false },
+  delayed:      { text: '我晚一點',     listDotClass: 'status-delayed',      isSos: false },
+  with_friend:  { text: '跟同學在一起', listDotClass: 'status-with_friend',  isSos: false },
+  busy:         { text: '暫時不方便接', listDotClass: 'status-busy',        isSos: false },
+  left_home:    { text: '我出門了',     listDotClass: 'status-left_home',    isSos: false },
+  arrived_home: { text: '我到家了',     listDotClass: 'status-arrived_home', isSos: false },
+  sos:          { text: 'SOS 緊急求助', listDotClass: '',                   isSos: true }
 };
 
 const iconEl        = document.getElementById('status-icon');
@@ -32,12 +32,13 @@ function getRawStatusMessage(record) {
 
 function getStatusDisplay(record) {
   const key = getStatusKey(record);
-  return statusConfig[key] || { text: '未知狀態', icon: '❓', dotClass: '' };
+  return statusConfig[key] || { text: '未知狀態', listDotClass: '', isSos: false };
 }
 
 function updateDashboard(record) {
   if (!record) {
-    iconEl.innerText   = '📭';
+    iconEl.innerText   = '⏳';
+    iconEl.style.background = 'transparent';
     textEl.innerText   = '目前沒有任何紀錄';
     timeEl.innerText   = '--';
     detailEl.style.display = 'none';
@@ -47,12 +48,29 @@ function updateDashboard(record) {
     return;
   }
 
-  const config     = getStatusDisplay(record);
-  const createdAt  = new Date(record.created_at);
-  const message    = getRawStatusMessage(record);
+  const key       = getStatusKey(record);
+  const config    = getStatusDisplay(record);
+  const createdAt = new Date(record.created_at);
+  const message   = getRawStatusMessage(record);
 
-  // 目前主卡片仍用 emoji 顯示狀態
-  iconEl.innerText = config.icon;
+  // 主燈號：SOS 用 emoji，其他用實心圓點（顏色與孩子端一致）
+  if (config.isSos) {
+    iconEl.innerText = '🚨';
+    iconEl.style.background = 'transparent';
+  } else {
+    iconEl.innerText = '';
+    let bg = '#3f861d'; // 預設 arrived
+
+    if (key === 'arrived')       bg = '#3f861d';
+    else if (key === 'delayed')  bg = '#126e9f';
+    else if (key === 'with_friend') bg = '#d8a100';
+    else if (key === 'busy')     bg = '#e07a00';
+    else if (key === 'left_home') bg = '#2f6f72';
+    else if (key === 'arrived_home') bg = '#374151';
+
+    iconEl.style.background = bg;
+  }
+
   textEl.innerText = config.text;
   timeEl.innerText = `更新時間：${formatDateTime(createdAt)} (${timeAgo(createdAt)})`;
 
@@ -80,9 +98,10 @@ function renderHistory(records) {
   }
 
   historyListEl.innerHTML = records.map((record) => {
-    const config      = getStatusDisplay(record);
-    const createdAt   = new Date(record.created_at);
-    const message     = getRawStatusMessage(record);
+    const key        = getStatusKey(record);
+    const config     = getStatusDisplay(record);
+    const createdAt  = new Date(record.created_at);
+    const message    = getRawStatusMessage(record);
     const safeMessage = escapeHtml(message);
 
     const messageHtml = message
@@ -103,14 +122,26 @@ function renderHistory(records) {
          </div>`
       : '';
 
-    const dotClass = config.dotClass ? `status-dot ${config.dotClass}` : 'status-dot';
+    let statusLabelHtml;
+
+    if (config.isSos) {
+      // SOS 小燈號用 emoji 提醒緊急
+      statusLabelHtml = `<span>🚨 ${config.text}</span>`;
+    } else {
+      const dotClass = config.listDotClass
+        ? `status-dot ${config.listDotClass}`
+        : 'status-dot';
+      statusLabelHtml = `
+        <span class="${dotClass}"></span>
+        <span>${config.text}</span>
+      `;
+    }
 
     return `
       <div class="history-item">
         <div class="history-top">
           <div class="history-status">
-            <span class="${dotClass}"></span>
-            <span>${config.text}</span>
+            ${statusLabelHtml}
           </div>
           <div class="history-time">${formatDateTime(createdAt)}</div>
         </div>

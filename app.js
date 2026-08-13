@@ -11,11 +11,13 @@ const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 // 狀態對應與 DOM 元素
 // ==========================================
 const statusConfig = {
-  arrived: { text: '我到了', icon: '🟢' },
-  delayed: { text: '我晚一點', icon: '🔵' },
-  with_friend: { text: '跟同學在一起', icon: '🟡' },
-  busy: { text: '暫時不方便接', icon: '🟠' },
-  sos: { text: 'SOS 緊急求助', icon: '🚨' }
+  arrived:      { text: '我到了',         icon: '🟢' },
+  delayed:      { text: '我晚一點',       icon: '🔵' },
+  with_friend:  { text: '跟同學在一起',   icon: '🟡' },
+  busy:         { text: '暫時不方便接',   icon: '🟠' },
+  left_home:    { text: '我出門了',       icon: '🟢' },
+  arrived_home: { text: '我到家了',       icon: '🔵' },
+  sos:          { text: 'SOS 緊急求助',   icon: '🚨' }
 };
 
 const msgEl = document.getElementById('system-msg');

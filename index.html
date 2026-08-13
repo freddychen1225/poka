@@ -117,8 +117,8 @@
       filter: brightness(0.97);
     }
 
-    .btn-green { background: #3f861d; }
-    .btn-blue { background: #126e9f; }
+    .btn-green  { background: #3f861d; }
+    .btn-blue   { background: #126e9f; }
     .btn-yellow { background: #d8a100; }
     .btn-orange { background: #e07a00; }
 
@@ -251,6 +251,12 @@
       </button>
       <button class="status-btn btn-orange" onclick="reportStatus('busy')">
         暫時<br>不方便接
+      </button>
+      <button class="status-btn btn-green" onclick="reportStatus('left_home')">
+        我出門了
+      </button>
+      <button class="status-btn btn-blue" onclick="reportStatus('arrived_home')">
+        我到家了
       </button>
       <button class="status-btn btn-red">
         SOS 緊急求助

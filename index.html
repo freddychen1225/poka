@@ -117,10 +117,15 @@
       filter: brightness(0.97);
     }
 
-    .btn-green  { background: #3f861d; }
-    .btn-blue   { background: #126e9f; }
-    .btn-yellow { background: #d8a100; }
-    .btn-orange { background: #e07a00; }
+    /* 原有亮色按鈕 */
+    .btn-green  { background: #3f861d; }   /* 我到了 */
+    .btn-blue   { background: #126e9f; }   /* 我晚一點 */
+    .btn-yellow { background: #d8a100; }   /* 跟同學在一起 */
+    .btn-orange { background: #e07a00; }   /* 暫時不方便接 */
+
+    /* 新增較柔和顏色 */
+    .btn-soft-teal { background: #2f6f72; }  /* 我出門了：偏灰綠藍 */
+    .btn-soft-navy { background: #374151; }  /* 我到家了：深灰藍 */
 
     .btn-red {
       background: #ab3648;
@@ -252,10 +257,10 @@
       <button class="status-btn btn-orange" onclick="reportStatus('busy')">
         暫時<br>不方便接
       </button>
-      <button class="status-btn btn-green" onclick="reportStatus('left_home')">
+      <button class="status-btn btn-soft-teal" onclick="reportStatus('left_home')">
         我出門了
       </button>
-      <button class="status-btn btn-blue" onclick="reportStatus('arrived_home')">
+      <button class="status-btn btn-soft-navy" onclick="reportStatus('arrived_home')">
         我到家了
       </button>
       <button class="status-btn btn-red">

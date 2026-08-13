@@ -2,22 +2,22 @@ const SUPABASE_URL = 'https://kjpxpqxbtslvvmeruofo.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtqcHhwcXhidHNsdnZtZXJ1b2ZvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc0NDAxNjgsImV4cCI6MjA5MzAxNjE2OH0.JAGs-ziFbUsNwXxMkJiKwkiN9O4FVWdDDv5uNfhcPdI';
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-// 狀態對應表：加入 left_home / arrived_home
+// 狀態對應表：文字 + 圓點 class
 const statusConfig = {
-  arrived:      { text: '我到了',       icon: '🟢' },
-  delayed:      { text: '我晚一點',     icon: '🔵' },
-  with_friend:  { text: '跟同學在一起', icon: '🟡' },
-  busy:         { text: '暫時不方便接', icon: '🟠' },
-  left_home:    { text: '我出門了',     icon: '🟢' },
-  arrived_home: { text: '我到家了',     icon: '🔵' },
-  sos:          { text: 'SOS 緊急求助', icon: '🚨' }
+  arrived:      { text: '我到了',       icon: '🟢',  dotClass: 'status-arrived' },
+  delayed:      { text: '我晚一點',     icon: '🔵',  dotClass: 'status-delayed' },
+  with_friend:  { text: '跟同學在一起', icon: '🟡',  dotClass: 'status-with_friend' },
+  busy:         { text: '暫時不方便接', icon: '🟠',  dotClass: 'status-busy' },
+  left_home:    { text: '我出門了',     icon: '🟢',  dotClass: 'status-left_home' },
+  arrived_home: { text: '我到家了',     icon: '🔵',  dotClass: 'status-arrived_home' },
+  sos:          { text: 'SOS 緊急求助', icon: '🚨',  dotClass: 'status-sos' }
 };
 
-const iconEl = document.getElementById('status-icon');
-const textEl = document.getElementById('status-text');
-const timeEl = document.getElementById('time-text');
-const detailEl = document.getElementById('detail-text');
-const mapLinkEl = document.getElementById('map-link');
+const iconEl        = document.getElementById('status-icon');
+const textEl        = document.getElementById('status-text');
+const timeEl        = document.getElementById('time-text');
+const detailEl      = document.getElementById('detail-text');
+const mapLinkEl     = document.getElementById('map-link');
 const lastUpdatedEl = document.getElementById('last-updated-text');
 const historyListEl = document.getElementById('history-list');
 
@@ -32,7 +32,7 @@ function getRawStatusMessage(record) {
 
 function getStatusDisplay(record) {
   const key = getStatusKey(record);
-  return statusConfig[key] || { text: '未知狀態', icon: '❓' };
+  return statusConfig[key] || { text: '未知狀態', icon: '❓', dotClass: '' };
 }
 
 function updateDashboard(record) {
@@ -51,6 +51,7 @@ function updateDashboard(record) {
   const createdAt  = new Date(record.created_at);
   const message    = getRawStatusMessage(record);
 
+  // 目前主卡片仍用 emoji 顯示狀態
   iconEl.innerText = config.icon;
   textEl.innerText = config.text;
   timeEl.innerText = `更新時間：${formatDateTime(createdAt)} (${timeAgo(createdAt)})`;
@@ -79,9 +80,9 @@ function renderHistory(records) {
   }
 
   historyListEl.innerHTML = records.map((record) => {
-    const config     = getStatusDisplay(record);
-    const createdAt  = new Date(record.created_at);
-    const message    = getRawStatusMessage(record);
+    const config      = getStatusDisplay(record);
+    const createdAt   = new Date(record.created_at);
+    const message     = getRawStatusMessage(record);
     const safeMessage = escapeHtml(message);
 
     const messageHtml = message
@@ -102,10 +103,15 @@ function renderHistory(records) {
          </div>`
       : '';
 
+    const dotClass = config.dotClass ? `status-dot ${config.dotClass}` : 'status-dot';
+
     return `
       <div class="history-item">
         <div class="history-top">
-          <div class="history-status">${config.icon} ${config.text}</div>
+          <div class="history-status">
+            <span class="${dotClass}"></span>
+            <span>${config.text}</span>
+          </div>
           <div class="history-time">${formatDateTime(createdAt)}</div>
         </div>
         ${messageHtml}
